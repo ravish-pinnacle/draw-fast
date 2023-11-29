@@ -2,6 +2,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import {
 	AssetRecordType,
+	Button,
 	Geometry2d,
 	getDefaultColorTheme,
 	Rectangle2d,
@@ -51,15 +52,17 @@ export type LiveImageShape = TLBaseShape<
 		w: number
 		h: number
 		name: string
+		overlayResult?: boolean
 	}
 >
 
 export class LiveImageShapeUtil extends ShapeUtil<LiveImageShape> {
 	static type = 'live-image' as any
 
-	override canBind = () => true
-
+	override canBind = () => false
+	override canUnmount = () => false
 	override canEdit = () => true
+	override isAspectRatioLocked = () => true
 
 	getDefaultProps() {
 		return {
@@ -76,8 +79,6 @@ export class LiveImageShapeUtil extends ShapeUtil<LiveImageShape> {
 			isFilled: false,
 		})
 	}
-
-	canUnmount = () => false
 
 	override canReceiveNewChildrenOfType = (shape: TLShape, _type: TLShape['type']) => {
 		return !shape.isLocked
@@ -108,7 +109,6 @@ export class LiveImageShapeUtil extends ShapeUtil<LiveImageShape> {
 	override onDragShapesOut = (_shape: LiveImageShape, shapes: TLShape[]): void => {
 		const parent = this.editor.getShape(_shape.parentId)
 		const isInGroup = parent && this.editor.isShapeOfType<TLGroupShape>(parent, 'group')
-
 		if (isInGroup) {
 			this.editor.reparentShapes(shapes, parent.id)
 		} else {
@@ -153,16 +153,12 @@ export class LiveImageShapeUtil extends ShapeUtil<LiveImageShape> {
 	override component(shape: LiveImageShape) {
 		const editor = useEditor()
 
-		useLiveImage(shape.id, {
-			debounceTime: 0,
-			appId: '110602490-lcm-plexed-sd15-i2i',
-		})
+		useLiveImage(shape.id)
 
 		const bounds = this.editor.getShapeGeometry(shape).bounds
 		const assetId = AssetRecordType.createId(shape.id.split(':')[1])
 		const asset = editor.getAsset(assetId)
 
-		// eslint-disable-next-line react-hooks/rules-of-hooks
 		const theme = getDefaultColorTheme({ isDarkMode: useIsDarkMode() })
 
 		return (
@@ -182,7 +178,7 @@ export class LiveImageShapeUtil extends ShapeUtil<LiveImageShape> {
 					width={bounds.width}
 					height={bounds.height}
 				/>
-				{asset && (
+				{!shape.props.overlayResult && asset && asset.props.src && (
 					<img
 						src={asset.props.src!}
 						alt={shape.props.name}
@@ -196,6 +192,28 @@ export class LiveImageShapeUtil extends ShapeUtil<LiveImageShape> {
 						}}
 					/>
 				)}
+				<Button
+					type="icon"
+					icon={shape.props.overlayResult ? 'chevron-right' : 'chevron-left'}
+					style={{
+						position: 'absolute',
+						top: -4,
+						left: shape.props.overlayResult ? shape.props.w : shape.props.w * 2,
+						pointerEvents: 'auto',
+						transform: 'scale(var(--tl-scale))',
+						transformOrigin: '0 4px',
+					}}
+					onPointerDown={(e) => {
+						e.stopPropagation()
+					}}
+					onClick={(e) => {
+						editor.updateShape<LiveImageShape>({
+							id: shape.id,
+							type: 'live-image',
+							props: { overlayResult: !shape.props.overlayResult },
+						})
+					}}
+				/>
 			</>
 		)
 	}

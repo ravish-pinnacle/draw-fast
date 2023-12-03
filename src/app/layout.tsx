@@ -11,7 +11,7 @@ const TWITTER_HANDLE = '@tldraw'
 const TWITTER_CARD = 'social-twitter.png'
 const FACEBOOK_CARD = 'social-og.png'
 const THEME_COLOR = '#FFFFFF'
-const SITE_URL = 'https://drawfast.tldraw.com'
+const SITE_URL = 'https://draw-fast-senslyze.vercel.app/'
 
 export const metadata: Metadata = {
 	metadataBase: new URL(SITE_URL),

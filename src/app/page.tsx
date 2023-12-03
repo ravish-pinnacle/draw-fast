@@ -151,23 +151,23 @@ const LiveImageAsset = track(function LiveImageAsset({ shape }: { shape: LiveIma
 	return (
 		asset &&
 		asset.props.src && (
-			// <img
-			// 	src={asset.props.src!}
-			// 	alt={shape.props.name}
-			// 	width={shape.props.w}
-			// 	height={shape.props.h}
-			// 	style={{
-			// 		position: 'absolute',
-			// 		top: 0,
-			// 		left: 0,
-			// 		width: shape.props.w,
-			// 		height: shape.props.h,
-			// 		maxWidth: 'none',
-			// 		transform,
-			// 		transformOrigin: 'top left',
-			// 		opacity: shape.opacity,
-			// 	}}
-			// />
+			<img
+				src={asset.props.src!}
+				alt={shape.props.name}
+				width={shape.props.w}
+				height={shape.props.h}
+				style={{
+					position: 'absolute',
+					top: 0,
+					left: 0,
+					width: shape.props.w,
+					height: shape.props.h,
+					maxWidth: 'none',
+					transform,
+					transformOrigin: 'top left',
+					opacity: shape.opacity,
+				}}
+			/>
 		)
 	)
 })

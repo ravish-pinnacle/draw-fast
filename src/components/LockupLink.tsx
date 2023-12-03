@@ -15,13 +15,13 @@ export function LockupLink() {
 				breakpoint < 6 ? 'lockup__link__mobile__raise' : ''
 			}`}
 		>
-			<By />
+{/* 			<By /> */}
 			{/* <img alt="by" className="lockup__by" src="/by-tldraw.svg" /> */}
 			<a href="https://twitter.com/tldraw">
 {/* 				<Lockup /> */}
 				{/* <img alt="tldraw logo" className="lockup" src="/lockup.svg" /> */}
 			</a>
-			<span className="lockup__collab">×</span>
+{/* 			<span className="lockup__collab">×</span> */}
 			<a href="https://twitter.com/fal_ai_data">
 {/* 				<FalLogo /> */}
 			</a>

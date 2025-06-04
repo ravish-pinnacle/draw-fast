@@ -2,6 +2,8 @@
 'use client'
 
 import { LiveImageShape, LiveImageShapeUtil } from '@/components/LiveImageShapeUtil'
+import { TableShapeUtil } from '@/components/TableShapeUtil'
+import { TableTool } from '@/components/TableTool'
 import { LockupLink } from '@/components/LockupLink'
 import { LiveImageProvider } from '@/hooks/useLiveImage'
 import * as fal from '@fal-ai/serverless-client'
@@ -26,35 +28,46 @@ fal.config({
 })
 
 const overrides: TLUiOverrides = {
-	tools(editor, tools) {
-		tools.liveImage = {
-			id: 'live-image',
-			icon: 'tool-frame',
-			label: 'Frame',
-			kbd: 'f',
-			readonlyOk: false,
-			onSelect: () => {
-				editor.setCurrentTool('live-image')
-			},
-		}
-		return tools
-	},
-	toolbar(_app, toolbar, { tools }) {
-		const frameIndex = toolbar.findIndex((item) => item.id === 'frame')
-		if (frameIndex !== -1) toolbar.splice(frameIndex, 1)
+        tools(editor, tools) {
+                tools.liveImage = {
+                        id: 'live-image',
+                        icon: 'tool-frame',
+                        label: 'Frame',
+                        kbd: 'f',
+                        readonlyOk: false,
+                        onSelect: () => {
+                                editor.setCurrentTool('live-image')
+                        },
+                }
+                tools.table = {
+                        id: 'table',
+                        icon: 'layout-grid',
+                        label: 'Table',
+                        kbd: 't',
+                        readonlyOk: true,
+                        onSelect: () => {
+                                editor.setCurrentTool('table')
+                        },
+                }
+                return tools
+        },
+        toolbar(_app, toolbar, { tools }) {
+                const frameIndex = toolbar.findIndex((item) => item.id === 'frame')
+                if (frameIndex !== -1) toolbar.splice(frameIndex, 1)
 		const highlighterIndex = toolbar.findIndex((item) => item.id === 'highlight')
-		if (highlighterIndex !== -1) {
-			const highlighterItem = toolbar[highlighterIndex]
-			toolbar.splice(highlighterIndex, 1)
-			toolbar.splice(3, 0, highlighterItem)
-		}
-		toolbar.splice(2, 0, toolbarItem(tools.liveImage))
-		return toolbar
-	},
+                if (highlighterIndex !== -1) {
+                        const highlighterItem = toolbar[highlighterIndex]
+                        toolbar.splice(highlighterIndex, 1)
+                        toolbar.splice(3, 0, highlighterItem)
+                }
+                toolbar.splice(2, 0, toolbarItem(tools.liveImage))
+                toolbar.splice(3, 0, toolbarItem(tools.table))
+                return toolbar
+        },
 }
 
-const shapeUtils = [LiveImageShapeUtil]
-const tools = [LiveImageTool]
+const shapeUtils = [LiveImageShapeUtil, TableShapeUtil]
+const tools = [LiveImageTool, TableTool]
 
 export default function Home() {
 	const onEditorMount = (editor: Editor) => {

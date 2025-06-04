@@ -60,115 +60,104 @@ export class TableShapeUtil extends ShapeUtil<TableShape> {
     const editor = useEditor()
     const bounds = this.editor.getShapeGeometry(shape).bounds
     const { rows, cols } = shape.props
-    const rowHeight = bounds.height / rows
-    const colWidth = bounds.width / cols
+
+    const inputs = []
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        inputs.push(
+          <input
+            key={`${r}-${c}`}
+            style={{
+              width: '100%',
+              height: '100%',
+              border: '1px solid currentColor',
+              boxSizing: 'border-box',
+            }}
+          />
+        )
+      }
+    }
 
     return (
       <>
         <SVGContainer>
-          <rect
-            width={bounds.width}
-            height={bounds.height}
-            fill="none"
-            stroke="currentColor"
-          />
-          {Array.from({ length: rows - 1 }).map((_, i) => (
-            <line
-              key={`r${i}`}
-              x1={0}
-              x2={bounds.width}
-              y1={(i + 1) * rowHeight}
-              y2={(i + 1) * rowHeight}
-              stroke="currentColor"
-            />
-          ))}
-          {Array.from({ length: cols - 1 }).map((_, i) => (
-            <line
-              key={`c${i}`}
-              y1={0}
-              y2={bounds.height}
-              x1={(i + 1) * colWidth}
-              x2={(i + 1) * colWidth}
-              stroke="currentColor"
-            />
-          ))}
+          <foreignObject width={bounds.width} height={bounds.height}>
+            <div
+              style={{
+                display: 'grid',
+                width: '100%',
+                height: '100%',
+                gridTemplateRows: `repeat(${rows}, 1fr)`,
+                gridTemplateColumns: `repeat(${cols}, 1fr)`,
+              }}
+            >
+              {inputs}
+            </div>
+          </foreignObject>
         </SVGContainer>
-        <Button
-          type="icon"
-          icon="minus"
+        <div
           style={{
             position: 'absolute',
-            top: -4,
-            left: bounds.width,
+            top: -28,
+            left: 0,
+            display: 'flex',
+            gap: 8,
             pointerEvents: 'auto',
             transform: 'scale(var(--tl-scale))',
           }}
           onPointerDown={(e) => e.stopPropagation()}
-          onClick={() =>
-            editor.updateShape<TableShape>({
-              id: shape.id,
-              type: 'table',
-              props: { cols: Math.max(1, cols - 1) },
-            })
-          }
-        />
-        <Button
-          type="icon"
-          icon="plus"
-          style={{
-            position: 'absolute',
-            top: -4,
-            left: bounds.width + 24,
-            pointerEvents: 'auto',
-            transform: 'scale(var(--tl-scale))',
-          }}
-          onPointerDown={(e) => e.stopPropagation()}
-          onClick={() =>
-            editor.updateShape<TableShape>({
-              id: shape.id,
-              type: 'table',
-              props: { cols: cols + 1 },
-            })
-          }
-        />
-        <Button
-          type="icon"
-          icon="minus"
-          style={{
-            position: 'absolute',
-            top: bounds.height,
-            left: -4,
-            pointerEvents: 'auto',
-            transform: 'scale(var(--tl-scale))',
-          }}
-          onPointerDown={(e) => e.stopPropagation()}
-          onClick={() =>
-            editor.updateShape<TableShape>({
-              id: shape.id,
-              type: 'table',
-              props: { rows: Math.max(1, rows - 1) },
-            })
-          }
-        />
-        <Button
-          type="icon"
-          icon="plus"
-          style={{
-            position: 'absolute',
-            top: bounds.height + 24,
-            left: -4,
-            pointerEvents: 'auto',
-            transform: 'scale(var(--tl-scale))',
-          }}
-          onPointerDown={(e) => e.stopPropagation()}
-          onClick={() =>
-            editor.updateShape<TableShape>({
-              id: shape.id,
-              type: 'table',
-              props: { rows: rows + 1 },
-            })
-          }
-        />
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <Button
+              type="icon"
+              icon="minus"
+              onClick={() =>
+                editor.updateShape<TableShape>({
+                  id: shape.id,
+                  type: 'table',
+                  props: { rows: Math.max(1, rows - 1) },
+                })
+              }
+            />
+            <span style={{ fontSize: '12px' }}>{rows}</span>
+            <Button
+              type="icon"
+              icon="plus"
+              onClick={() =>
+                editor.updateShape<TableShape>({
+                  id: shape.id,
+                  type: 'table',
+                  props: { rows: rows + 1 },
+                })
+              }
+            />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <Button
+              type="icon"
+              icon="minus"
+              onClick={() =>
+                editor.updateShape<TableShape>({
+                  id: shape.id,
+                  type: 'table',
+                  props: { cols: Math.max(1, cols - 1) },
+                })
+              }
+            />
+            <span style={{ fontSize: '12px' }}>{cols}</span>
+            <Button
+              type="icon"
+              icon="plus"
+              onClick={() =>
+                editor.updateShape<TableShape>({
+                  id: shape.id,
+                  type: 'table',
+                  props: { cols: cols + 1 },
+                })
+              }
+            />
+          </div>
+        </div>
       </>
     )
   }

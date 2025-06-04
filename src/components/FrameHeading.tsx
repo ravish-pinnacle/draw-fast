@@ -106,7 +106,7 @@ export function FrameHeading({
 					labelSide === 'top' || labelSide === 'bottom' ? Math.ceil(width) : Math.ceil(height)
 				}px + var(--space-5))`,
 				bottom: '100%',
-				transform: `${labelTranslate} scale(var(--tl-scale)) translateX(calc(-1 * var(--space-3))`,
+                                transform: `${labelTranslate} scale(var(--tl-scale)) translateX(calc(-1 * var(--space-3)))`,
 			}}
 			onPointerDown={handlePointerDown}
 		>

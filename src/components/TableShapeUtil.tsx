@@ -146,7 +146,7 @@ export class TableShapeUtil extends ShapeUtil<TableShape> {
           icon="gear"
           style={{
             position: 'absolute',
-            top: -28,
+            top: -32,
             left: 0,
             pointerEvents: 'auto',
             transform: 'scale(var(--tl-scale))',
@@ -158,19 +158,22 @@ export class TableShapeUtil extends ShapeUtil<TableShape> {
           <div
             style={{
               position: 'absolute',
-              top: -28,
+              top: -36,
               left: 28,
               background: 'var(--color-panel)',
+              boxShadow: 'var(--shadow-2)',
               borderRadius: 4,
-              padding: 4,
+              padding: '6px 8px',
               display: 'flex',
-              gap: 8,
+              flexDirection: 'column',
+              gap: 6,
               pointerEvents: 'auto',
               transform: 'scale(var(--tl-scale))',
             }}
             onPointerDown={(e) => e.stopPropagation()}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <span style={{ fontSize: '12px', flexGrow: 1 }}>Rows</span>
               <Button
                 type="icon"
                 icon="minus"
@@ -182,7 +185,7 @@ export class TableShapeUtil extends ShapeUtil<TableShape> {
                   })
                 }
               />
-              <span style={{ fontSize: '12px' }}>{rows}</span>
+              <span style={{ fontSize: '12px', minWidth: '1.5em', textAlign: 'center' }}>{rows}</span>
               <Button
                 type="icon"
                 icon="plus"
@@ -196,6 +199,7 @@ export class TableShapeUtil extends ShapeUtil<TableShape> {
               />
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <span style={{ fontSize: '12px', flexGrow: 1 }}>Columns</span>
               <Button
                 type="icon"
                 icon="minus"
@@ -207,7 +211,7 @@ export class TableShapeUtil extends ShapeUtil<TableShape> {
                   })
                 }
               />
-              <span style={{ fontSize: '12px' }}>{cols}</span>
+              <span style={{ fontSize: '12px', minWidth: '1.5em', textAlign: 'center' }}>{cols}</span>
               <Button
                 type="icon"
                 icon="plus"

@@ -41,7 +41,7 @@ const overrides: TLUiOverrides = {
                 }
                 tools.table = {
                         id: 'table',
-                        icon: 'layout-grid',
+                        icon: 'stack-vertical',
                         label: 'Table',
                         kbd: 't',
                         readonlyOk: true,

@@ -11,6 +11,7 @@ import {
   toDomPrecision,
   useEditor,
 } from '@tldraw/tldraw'
+import { useState } from 'react'
 
 export type TableShape = TLBaseShape<
   'table',
@@ -60,6 +61,7 @@ export class TableShapeUtil extends ShapeUtil<TableShape> {
     const editor = useEditor()
     const bounds = this.editor.getShapeGeometry(shape).bounds
     const { rows, cols } = shape.props
+    const [open, setOpen] = useState(false)
 
     const inputs = []
     for (let r = 0; r < rows; r++) {
@@ -67,6 +69,7 @@ export class TableShapeUtil extends ShapeUtil<TableShape> {
         inputs.push(
           <input
             key={`${r}-${c}`}
+            type="text"
             style={{
               width: '100%',
               height: '100%',
@@ -78,9 +81,52 @@ export class TableShapeUtil extends ShapeUtil<TableShape> {
       }
     }
 
+    const gridLines = []
+    for (let r = 1; r < rows; r++) {
+      const y = (bounds.height * r) / rows
+      gridLines.push(
+        <line
+          key={`row-${r}`}
+          x1={0}
+          y1={y}
+          x2={bounds.width}
+          y2={y}
+          className="tl-frame__body"
+          pointerEvents="none"
+        />
+      )
+    }
+    for (let c = 1; c < cols; c++) {
+      const x = (bounds.width * c) / cols
+      gridLines.push(
+        <line
+          key={`col-${c}`}
+          x1={x}
+          y1={0}
+          x2={x}
+          y2={bounds.height}
+          className="tl-frame__body"
+          pointerEvents="none"
+        />
+      )
+    }
+
     return (
       <>
         <SVGContainer>
+          <svg
+            width={bounds.width}
+            height={bounds.height}
+            style={{ position: 'absolute', top: 0, left: 0 }}
+          >
+            <rect
+              width={bounds.width}
+              height={bounds.height}
+              className="tl-frame__body"
+              fill="none"
+            />
+            {gridLines}
+          </svg>
           <foreignObject width={bounds.width} height={bounds.height}>
             <div
               style={{
@@ -95,69 +141,87 @@ export class TableShapeUtil extends ShapeUtil<TableShape> {
             </div>
           </foreignObject>
         </SVGContainer>
-        <div
+        <Button
+          type="icon"
+          icon="gear"
           style={{
             position: 'absolute',
             top: -28,
             left: 0,
-            display: 'flex',
-            gap: 8,
             pointerEvents: 'auto',
             transform: 'scale(var(--tl-scale))',
           }}
           onPointerDown={(e) => e.stopPropagation()}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <Button
-              type="icon"
-              icon="minus"
-              onClick={() =>
-                editor.updateShape<TableShape>({
-                  id: shape.id,
-                  type: 'table',
-                  props: { rows: Math.max(1, rows - 1) },
-                })
-              }
-            />
-            <span style={{ fontSize: '12px' }}>{rows}</span>
-            <Button
-              type="icon"
-              icon="plus"
-              onClick={() =>
-                editor.updateShape<TableShape>({
-                  id: shape.id,
-                  type: 'table',
-                  props: { rows: rows + 1 },
-                })
-              }
-            />
+          onClick={() => setOpen(!open)}
+        />
+        {open && (
+          <div
+            style={{
+              position: 'absolute',
+              top: -28,
+              left: 28,
+              background: 'var(--color-panel)',
+              borderRadius: 4,
+              padding: 4,
+              display: 'flex',
+              gap: 8,
+              pointerEvents: 'auto',
+              transform: 'scale(var(--tl-scale))',
+            }}
+            onPointerDown={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <Button
+                type="icon"
+                icon="minus"
+                onClick={() =>
+                  editor.updateShape<TableShape>({
+                    id: shape.id,
+                    type: 'table',
+                    props: { rows: Math.max(1, rows - 1) },
+                  })
+                }
+              />
+              <span style={{ fontSize: '12px' }}>{rows}</span>
+              <Button
+                type="icon"
+                icon="plus"
+                onClick={() =>
+                  editor.updateShape<TableShape>({
+                    id: shape.id,
+                    type: 'table',
+                    props: { rows: rows + 1 },
+                  })
+                }
+              />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <Button
+                type="icon"
+                icon="minus"
+                onClick={() =>
+                  editor.updateShape<TableShape>({
+                    id: shape.id,
+                    type: 'table',
+                    props: { cols: Math.max(1, cols - 1) },
+                  })
+                }
+              />
+              <span style={{ fontSize: '12px' }}>{cols}</span>
+              <Button
+                type="icon"
+                icon="plus"
+                onClick={() =>
+                  editor.updateShape<TableShape>({
+                    id: shape.id,
+                    type: 'table',
+                    props: { cols: cols + 1 },
+                  })
+                }
+              />
+            </div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <Button
-              type="icon"
-              icon="minus"
-              onClick={() =>
-                editor.updateShape<TableShape>({
-                  id: shape.id,
-                  type: 'table',
-                  props: { cols: Math.max(1, cols - 1) },
-                })
-              }
-            />
-            <span style={{ fontSize: '12px' }}>{cols}</span>
-            <Button
-              type="icon"
-              icon="plus"
-              onClick={() =>
-                editor.updateShape<TableShape>({
-                  id: shape.id,
-                  type: 'table',
-                  props: { cols: cols + 1 },
-                })
-              }
-            />
-          </div>
-        </div>
+        )}
       </>
     )
   }
